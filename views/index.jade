@@ -2,4 +2,8 @@ extends layout
 
 block content
   h1= title
+  p Socket Version #{socketVersion}
   p Welcome to #{title}
+  script(src='#{socketVersion}')
+  script(src='javascripts/room.js')
+
