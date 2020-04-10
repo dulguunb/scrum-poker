@@ -6,6 +6,7 @@
 
 var app = require('../app');
 var socket = require('../socket/socket')
+var dbHandler = require('../socket/dbHandler')
 var debug = require('debug')('poker-app:server');
 var http = require('http');
 
@@ -22,11 +23,33 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var server  = require('http').createServer(app);
-var io      = require('socket.io').listen(server);
 
-io.on('connection', function(socket) {
-  console.log('a user connected');
-});
+var io = require('socket.io').listen(server);
+// io.on('connection',function(socket){
+//   socket.on('poker room',function(msg){
+//     console.log('socket is invoked from index.js: ');
+//     console.log(`message: ${msg}`);
+//   })
+// });
+  // rooms.forEach(room => {
+io.of(`/poker`).on('connection',(socket) => {
+      console.log('a new user connected to poker namespace');
+      socket.emit('welcome','welcome to the poker namespace');
+      socket.emit('joinRoom', roomId => {
+        dbHandler.database.find({},function(err,rooms) {
+          let exists = rooms.filter(room => room._id == roomId) ? true : false;
+          console.log(`this room exists: ${exists}`);
+          if(exists){
+            socket.join(roomId);
+            return socket.emit('success','You have succesfully joined to the room');
+          }
+          else{
+            return socket.emit('err', 'you have not joined to a room');
+          }
+        });
+    })
+  });
+  // })
 /**
  * Listen on provided port, on all network interfaces.
  */

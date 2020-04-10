@@ -2,8 +2,12 @@ extends layout
 
 block content
   h1= title
-  p Socket Version #{socketVersion}
   p Welcome to #{title}
+  p AssignedRoom #{room.name}
+  script.
+    let room = "#{room}"
+    let roomName = "#{room.name}"
+    let roomId = "#{room._id}"
   script(src='#{socketVersion}')
   script(src='javascripts/room.js')
 
