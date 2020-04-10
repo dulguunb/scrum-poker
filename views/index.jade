@@ -3,11 +3,20 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  p AssignedRoom #{room.name}
+  p Room name: #{room.name}
+  h2 SEND this link to your teammates to connect
+  code #{address}/room/?roomId=#{room._id}
+  form#name
+    label Name
+    br
+    input#nameOfUser(type="text")
+    br
+    input(type="submit",value="submit")
   script.
     let room = "#{room}"
     let roomName = "#{room.name}"
     let roomId = "#{room._id}"
+    let address = "#{address}"
   script(src='#{socketVersion}')
-  script(src='javascripts/room.js')
+  script(src='#{address}/javascripts/room.js')
 

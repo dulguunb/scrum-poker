@@ -11,7 +11,7 @@ module.exports = {
         }
         else{
           console.log('a new document is inserted:');
-          console.log(newDocs);
+          // console.log(newDocs);
         }
       });
   },
