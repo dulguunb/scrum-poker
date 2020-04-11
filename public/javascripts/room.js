@@ -16,18 +16,27 @@ document.getElementById('nameButton').addEventListener('click',function(){
     roomId: roomId
   }
   socket.emit('joinRoom',auth);
-  
   socket.on("newUser",(joinedUsers)=>{
     console.log('joined Users: ');
     console.log(joinedUsers);
-    let joinedUsersHtml = '<ul>'
-    joinedUsers.forEach(user => {
-      joinedUsersHtml+=`<li> ${user} </li>`
-    });
-    joinedUsersHtml+='</ul>';
-    document.getElementById('joinedUsers').innerHTML+=joinedUsersHtml;
+    const joinedUsersHtml = createJoinedUsersHtml(joinedUsers);
+    document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
   });
-})
+});
+socket.on('joinRoom',(users) => {
+  const joinedUsersHtml = createJoinedUsersHtml(users);
+  document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
+});
+
+let createJoinedUsersHtml = (users) =>{
+  let joinedUsersHtml = '<ul>'
+  users.forEach( user =>{
+    joinedUsersHtml+=`<li> ${user} </li>`
+  })
+  joinedUsersHtml+='</ul>'
+  return joinedUsersHtml
+}
+
 socket.on(roomId,(res)=>{console.log(res)});
 socket.on('welcome',(msg) => console.log(msg));
 socket.on('err',(err)=>console.log(err));
