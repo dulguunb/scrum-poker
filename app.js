@@ -23,7 +23,8 @@ for(let i=0;i<10;i++){
   let newRoom = {
     id: i,
     name: `room-${i}`,
-    occupied: false
+    occupied: false,
+    users:[]
   }
   dbHandler.insert(newRoom);
 }

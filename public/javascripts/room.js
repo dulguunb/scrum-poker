@@ -1,15 +1,34 @@
-const socket = io('http://localhost:3000/poker');
+const socket = io(`${address}/poker`);
 console.log(room);
 socket.on('connection',(msg)=>{
   console.log(`connection event msg: ${msg}`);
 })
 console.log(`room name: ${roomName}`)
 console.log(`room id: ${roomId}`)
-socket.emit('joinRoom',roomId)
 
+
+document.getElementById('nameButton').addEventListener('click',function(){
+  console.log(document.getElementById('nameOfUser').value);
+  let userName = document.getElementById('nameOfUser').value;
+  console.log(`DOM read: ${userName}`);
+  let auth = {
+    userName: userName,
+    roomId: roomId
+  }
+  socket.emit('joinRoom',auth);
+  
+  socket.on("newUser",(joinedUsers)=>{
+    console.log('joined Users: ');
+    console.log(joinedUsers);
+    let joinedUsersHtml = '<ul>'
+    joinedUsers.forEach(user => {
+      joinedUsersHtml+=`<li> ${user} </li>`
+    });
+    joinedUsersHtml+='</ul>';
+    document.getElementById('joinedUsers').innerHTML+=joinedUsersHtml;
+  });
+})
+socket.on(roomId,(res)=>{console.log(res)});
 socket.on('welcome',(msg) => console.log(msg));
-socket.on('fail',(err)=>console.log(err));
-socket.on('success',(res)=>{
-  console.log(res);
-});
-socket.emit('poker room','User is sending a message!');
+socket.on('err',(err)=>console.log(err));
+socket.on('success',(res)=>{console.log(res);});

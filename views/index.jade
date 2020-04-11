@@ -6,12 +6,15 @@ block content
   p Room name: #{room.name}
   h2 SEND this link to your teammates to connect
   code #{address}/room/?roomId=#{room._id}
-  form#name
+  div#joinedUsers
+    
+  div
     label Name
     br
     input#nameOfUser(type="text")
     br
-    input(type="submit",value="submit")
+    input#nameButton(type="submit",value="submit")
+  
   script.
     let room = "#{room}"
     let roomName = "#{room.name}"

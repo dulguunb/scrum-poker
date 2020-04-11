@@ -22,7 +22,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-var server  = require('http').createServer(app);
+var server = require('http').createServer(app);
 
 var io = require('socket.io').listen(server);
 // io.on('connection',function(socket){
@@ -31,28 +31,42 @@ var io = require('socket.io').listen(server);
 //     console.log(`message: ${msg}`);
 //   })
 // });
-  // rooms.forEach(room => {
-io.of(`/poker`).on('connection',(socket) => {
-      console.log('a new user connected to poker namespace');
-      socket.emit('welcome','welcome to the poker name namespace');
-      socket.on('joinRoom', roomId => {
-        dbHandler.database.find({},function(err,rooms) {
-          let exists = rooms.filter(room => room._id == roomId) ? true : false;
-          console.log(`this room exists: ${exists}`);
-          if(exists){
-            console.log('joining to the room');
-            socket.join(roomId);
-            io.of('/poker').in(roomId).emit("newUser","new User Joined to " + roomId);
-            return socket.emit('success',`You have succesfully joined to the room: ${roomId}`);
+// rooms.forEach(room => {
+io.of(`/poker`).on('connection', (socket) => {
+  console.log('a new user connected to poker namespace');
+  socket.emit('welcome', 'welcome to the poker name namespace');
+  socket.on('joinRoom', auth => {
+    let roomId = auth.roomId;
+    let userName = auth.userName;
+    console.log(`Server: join room  ${roomId}`);
+    dbHandler.database.findOne({_id: roomId}, function (err, room) {
+      if (err) {
+        console.log('error occured');
+        console.log(err);
+      }
+        console.log(`${userName} has joined room ${roomId}`);
+        socket.join(roomId);
+        console.log(`room: `);
+        console.log(room)
+        if(room.users == undefined){
+          room.users = [];
+        }
+        room.users.push(userName);
+        // Update the joined users
+        dbHandler.database.update({ _id: roomId }, { users: room.users }, function (err, numReplaced) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(`num of Replaced : ${numReplaced}`);
           }
-          else{
-            return socket.emit('err', 'you have not joined to a room');
-          }
-        });
-        socket.disconnect();
-    })
-  });
-  // })
+        })
+        io.of('/poker').in(roomId).emit("newUser", room.users);
+        return socket.emit('success', `You have succesfully joined to the room: ${roomId}`);
+    });
+    // socket.disconnect();
+  })
+});
+// })
 /**
  * Listen on provided port, on all network interfaces.
  */
