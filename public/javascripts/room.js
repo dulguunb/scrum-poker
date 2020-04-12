@@ -31,7 +31,7 @@ socket.on('joinRoom',(users) => {
 let createJoinedUsersHtml = (users) =>{
   let joinedUsersHtml = '<ul>'
   users.forEach( user =>{
-    joinedUsersHtml+=`<li> ${user} </li>`
+    joinedUsersHtml+=`<li> ${user.name}: ${user.id}</li>`
   })
   joinedUsersHtml+='</ul>'
   return joinedUsersHtml

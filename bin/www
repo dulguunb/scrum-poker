@@ -25,46 +25,70 @@ var server = http.createServer(app);
 var server = require('http').createServer(app);
 
 var io = require('socket.io').listen(server);
-// io.on('connection',function(socket){
-//   socket.on('poker room',function(msg){
-//     console.log('socket is invoked from index.js: ');
-//     console.log(`message: ${msg}`);
-//   })
-// });
-// rooms.forEach(room => {
 io.of(`/poker`).on('connection', (socket) => {
   console.log('a new user connected to poker namespace');
   socket.emit('welcome', 'welcome to the poker name namespace');
+  let roomId;
+  let userName;
+  let userId;
   socket.on('joinRoom', auth => {
-    let roomId = auth.roomId;
-    let userName = auth.userName;
+    roomId = auth.roomId;
+    userName = auth.userName;
+    userId = socket.id;
+    socket.auth = auth;
     console.log(`Server: join room  ${roomId}`);
-    dbHandler.database.findOne({_id: roomId}, function (err, room) {
+    dbHandler.database.findOne({_id: roomId}, (err, room) => {
+      if(err){
+        console.log('error has been occured during database findOne:roomId');
+        console.log(err);
+      }
+      if(room.users!=undefined){
+        io.of('/poker').in(roomId).emit("joinRoom", room.users);
+      }
+    });
+    dbHandler.database.findOne({_id: roomId}, (err, room) => {
       if (err) {
         console.log('error occured');
         console.log(err);
       }
-        console.log(`${userName} has joined room ${roomId}`);
+        console.log(`username: ${userName} | userId ${userId} has joined to room ${roomId}`);
         socket.join(roomId);
         console.log(`room: `);
         console.log(room)
         if(room.users == undefined){
           room.users = [];
         }
-        room.users.push(userName);
+        room.users.push({name: userName,id:userId});
         // Update the joined users
-        dbHandler.database.update({ _id: roomId }, { users: room.users }, function (err, numReplaced) {
+        dbHandler.database.update({ _id: roomId }, { users: room.users },  (err, numReplaced) => {
           if (err) {
             console.log(err);
           } else {
             console.log(`num of Replaced : ${numReplaced}`);
           }
-        })
+        });
         io.of('/poker').in(roomId).emit("newUser", room.users);
         return socket.emit('success', `You have succesfully joined to the room: ${roomId}`);
     });
     // socket.disconnect();
-  })
+  });
+  socket.on('disconnect',() => {
+    console.log(`user: ${userName}| userId:${userId} is disconnected from ${roomId}`);
+    dbHandler.database.findOne({_id:roomId},(err,room) => {
+      if(err){
+        console.log(`socket on disconnect; Error occured during dbHandler: `);
+        console.log(err);
+      }
+      if (room && room.users){
+        let onlineUsers = room.users.filter(user => user.id != userId);
+        dbHandler.database.update({_id:roomId},{users:onlineUsers},(err,numReplaced) => {
+
+        });
+        io.of('/poker').in(roomId).emit("newUser", onlineUsers);
+      }
+    });
+  });
+
 });
 // })
 /**
