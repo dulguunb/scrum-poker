@@ -8,7 +8,6 @@ socket.on('connection', (msg) => {
 console.log(`room name: ${roomName}`)
 console.log(`room id: ${roomId}`)
 let myUser;
-
 document.getElementById('nameSubmitButton').addEventListener('click', function () {
   console.log(document.getElementById('nameOfUser').value);
   let userName = document.getElementById('nameOfUser').value;
@@ -43,13 +42,19 @@ document.getElementById('nameSubmitButton').addEventListener('click', function (
     document.getElementById('sps').innerHTML = storyPoints;
   });
 });
-socket.on('calculate',averageScore => {
+socket.on('calculate',finalResult => {
+  let users = finalResult.users;
+  let averageScore = finalResult.average;
   document.getElementById('averageScore').innerHTML = `<h3> Average Score: ${averageScore} </h3>`
+  let listUsersHtml = createJoinedUsersHtmlWithScores(users);
+  let joinedUsers = document.getElementById('joinedUsers');
+  joinedUsers.innerHTML = listUsersHtml;
 });
 socket.on('updateUsers', (users) => {
   const joinedUsersHtml = createJoinedUsersHtml(users);
   document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
 });
+
 
 let createJoinedUsersHtml = (users) => {
   let joinedUsersHtml = '<ul>'
@@ -65,6 +70,14 @@ let createJoinedUsersHtml = (users) => {
   return joinedUsersHtml
 }
 
+let createJoinedUsersHtmlWithScores = (users) => {
+  let joinedUsersHtml = '<ul>'
+  users.forEach(user => {
+      joinedUsersHtml += `<li> ${user.name}: ${user.score}</li>`
+  });
+  joinedUsersHtml += '</ul>'
+  return joinedUsersHtml
+}
 let createPokerScores = () => {
   let buttonsHTML = ''
   let pokerScores = [1, 2, 3, 5, 8, 13, 21, 40, 100];

@@ -104,7 +104,11 @@ io.of(`/poker`).on('connection', (socket) => {
             sum+=user.score;
           });
           let average = sum/lengthOfUsers;
-          io.of('/poker').in(roomId).emit('calculate',average);
+          let finalResult = {
+            users: room.users,
+            average: average
+          }
+          io.of('/poker').in(roomId).emit('calculate',finalResult);
         }
       });
     })
