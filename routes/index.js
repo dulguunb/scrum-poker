@@ -3,20 +3,23 @@ var router = express.Router();
 let dbHandler = require('../socket/dbHandler');
 
 router.get('/', function (req, res, next) {
-    dbHandler.database.find({ occupied: false }, (err, docs) => {
+    dbHandler.database.find({ occupied: false }, (err, rooms) => {
       if (err) {
         console.log(err);
       }
-      else {
-        console.log('index.js get(/) function');
-        console.log(docs);
+      let newRoom = {
+        id:rooms.length+1,
+        name: `room-${rooms.length+1}`,
+        occupied: false,
+        users:[]
       }
-      let size = docs.length
+      dbHandler.insert(newRoom);
+      let size = rooms.length
       let rIndex = Math.floor(Math.random() * (size - 1));
       console.log(`rIndex: ${rIndex}`);
       console.log('random room: ');
-      console.log(docs[rIndex]);
-      let assignedRoom = docs[rIndex];
+      console.log(rooms[rIndex]);
+      let assignedRoom = rooms[rIndex];
       assignedRoom.occupied = true;
       // update the database after it's randomly selected
       dbHandler.database.update({ _id: assignedRoom._id }, { occupied: true }, function (err, numReplaced) {

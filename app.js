@@ -19,15 +19,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // Populate the room-names
-for(let i=0;i<10;i++){
   let newRoom = {
-    id: i,
-    name: `room-${i}`,
+    id: 0,
+    name: `room-0`,
     occupied: false,
     users:[]
   }
   dbHandler.insert(newRoom);
-}
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -6,15 +6,17 @@ block content
   p Room name: #{room.name}
   h2 SEND this link to your teammates to connect
   code #{address}/room/?roomId=#{room._id}
+  div#averageScore
   div#joinedUsers
-    
+
   div
-    label Name
+    label My Name is:
     br
     input#nameOfUser(type="text")
     br
-    input#nameButton(type="submit",value="submit")
-  
+    input#nameSubmitButton(type="submit",value="submit")
+  div#sps
+  div#calculateTheScore
   script.
     let room = "#{room}"
     let roomName = "#{room.name}"
