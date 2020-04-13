@@ -1,0 +1,8 @@
+{
+  "name": "Scrum Poker",
+  "description": "Distributed Real Time WebAPP",
+  "repository": "https://github.com/dulguunb/scrum-poker/",
+  "logo": "",
+  "keywords": ["socketsio", "scrum", "story points"],
+  "image": "heroku/nodejs"
+}
