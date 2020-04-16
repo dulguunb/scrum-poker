@@ -1,11 +1,12 @@
 extends layout
 
 block content
+  link(rel='stylesheet', href='#{address}/stylesheets/style.css')
   h1= title
-  p Welcome to #{title}
-  p Room name: #{room.name}
-  h2 SEND this link to your teammates to connect
-  code #{address}/room/?roomId=#{room._id}
+  div.description
+    h3 Scrum master should submit his/her name first then send this link to your teammates to connect:
+    code.link #{address}/room/?roomId=#{room._id}
+  br
   div#averageScore
   div#joinedUsers
 
@@ -14,9 +15,15 @@ block content
     br
     input#nameOfUser(type="text")
     br
-    input#nameSubmitButton(type="submit",value="submit")
+    input#nameSubmitButton(type="submit",value="Enter", class="btn")
+  
   div#sps
   div#calculateTheScore
+  
+  div.footer
+    p If you've liked this application, please star it on 
+      a(href='https://github.com/dulguunb/scrum-poker') Github ❤️
+    code version release: 0.1.1 | commit hash:#{releaseHash}
   script.
     let room = "#{room}"
     let roomName = "#{room.name}"
@@ -24,4 +31,4 @@ block content
     let address = "#{address}"
   script(src='#{socketVersion}')
   script(src='#{address}/javascripts/room.js')
-
+  

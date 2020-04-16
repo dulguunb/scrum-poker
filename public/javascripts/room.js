@@ -9,6 +9,7 @@ console.log(`room name: ${roomName}`)
 console.log(`room id: ${roomId}`)
 let myUser;
 document.getElementById('nameSubmitButton').addEventListener('click', function () {
+  document.getElementById('nameSubmitButton').style.display='none'
   console.log(document.getElementById('nameOfUser').value);
   let userName = document.getElementById('nameOfUser').value;
   console.log(`DOM read: ${userName}`);
@@ -28,6 +29,7 @@ document.getElementById('nameSubmitButton').addEventListener('click', function (
     document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
     document.getElementById('nameSubmitButton').disabled = true;
     let submitButton = document.createElement('input');
+    submitButton.className='btn'
     if (myUser.admin) {
       submitButton.type = 'button'
       submitButton.value = 'Calculate The SP';
@@ -60,10 +62,10 @@ let createJoinedUsersHtml = (users) => {
   let joinedUsersHtml = '<ul>'
   users.forEach(user => {
     if (user.score == 0) {
-      joinedUsersHtml += `<li> ${user.name}: NOT VOTED</li>`
+      joinedUsersHtml += `<li class="nonVotedUsers"> ${user.name}: NOT VOTED</li>`
     }
     else {
-      joinedUsersHtml += `<li> ${user.name}: VOTED</li>`
+      joinedUsersHtml += `<li class="votedUsers"> ${user.name}: VOTED</li>`
     }
   });
   joinedUsersHtml += '</ul>'
@@ -80,9 +82,9 @@ let createJoinedUsersHtmlWithScores = (users) => {
 }
 let createPokerScores = () => {
   let buttonsHTML = ''
-  let pokerScores = [1, 2, 3, 5, 8, 13, 21, 40, 100];
+  let pokerScores = ['1/2', '1', '2', '3', '5', '8', '13', '21', '40', '100' ,"'&#9749;'"];
   pokerScores.forEach(score => {
-    let button = `<input type="button" onclick=sendScore(${score}) class="${score} score-btn" value="${score}"/>`;
+    let button = `<input type="button" onclick=sendScore(${score}) class="score-btn btn" value="${score}"/>`;
     buttonsHTML += button;
     console.log(button);
   });

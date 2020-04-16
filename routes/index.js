@@ -35,7 +35,8 @@ router.get('/', function (req, res, next) {
         title: 'Distributed Scrum Poker',
         socketVersion: 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js',
         room: assignedRoom,
-        address: process.env.WEBSITE_URL
+        address: process.env.WEBSITE_URL,
+        releaseHash: process.env.RELEASE_HASH
       }
       );
     });
@@ -63,6 +64,7 @@ router.get('/room',function(req,res,next){
           socketVersion: 'https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js',
           room: room[0],
           address: process.env.WEBSITE_URL,
+          releaseHash: process.env.RELEASE_HASH
         }
         );
       }

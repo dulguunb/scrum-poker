@@ -6,3 +6,30 @@ body {
 a {
   color: #00B7FF;
 }
+.btn{
+  background-color:#008CBA;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+input[type=text] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+.votedUsers{
+  color:#0BA706
+}
+.nonVotedUsers{
+  color: #B22A02
+}
+.link{
+  color:#00639F
+}

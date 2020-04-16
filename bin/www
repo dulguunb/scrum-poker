@@ -98,12 +98,15 @@ io.of(`/poker`).on('connection', (socket) => {
       console.log('calculate socket is called');
       dbHandler.database.findOne({_id:roomId},(err,room) => {
         if(room && room.users){
-          let lengthOfUsers = room.users.length;
           let sum = 0;
+          let numVoted=0;
           room.users.forEach(user => {
-            sum+=user.score;
+            if(user.score != '☕'){
+              sum+=parseFloat(user.score);
+              numVoted++;
+            }
           });
-          let average = sum/lengthOfUsers;
+          let average = sum/numVoted;
           let finalResult = {
             users: room.users,
             average: average
