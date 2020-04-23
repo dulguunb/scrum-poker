@@ -97,6 +97,7 @@ let sendScore = (score) => {
   console.log('modified User: ');
   console.log(myUser);
   socket.emit('voteScore', myUser);
+  document.getElementById('myscore').innerHTML = `<h3> I have selected: ${myUser.score} SP</h3>`;
 }
 
 socket.on(roomId, (res) => { console.log(res) });
