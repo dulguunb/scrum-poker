@@ -28,15 +28,23 @@ document.getElementById('nameSubmitButton').addEventListener('click', function (
     const joinedUsersHtml = createJoinedUsersHtml(joinedUsers);
     document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
     document.getElementById('nameSubmitButton').disabled = true;
+    let resetButton = document.createElement('input');
     let submitButton = document.createElement('input');
-    submitButton.className='btn'
+    submitButton.className='btn';
+    resetButton.className='btn';
     if (myUser.admin) {
-      submitButton.type = 'button'
+      submitButton.type = 'button';
       submitButton.value = 'Calculate The SP';
+      resetButton.type = 'button';
+      resetButton.value='Reset Scores';
       let divCalculateScore = document.getElementById('calculateTheScore');
       divCalculateScore.innerHTML = '';
       divCalculateScore.appendChild(submitButton);
+      divCalculateScore.appendChild(resetButton);
     }
+    resetButton.addEventListener('click',() =>{
+      socket.emit('resetScore',roomId);
+    });
     submitButton.addEventListener('click', () => {
       socket.emit('calculate',roomId);
     });

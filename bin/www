@@ -74,7 +74,6 @@ io.of(`/poker`).on('connection', (socket) => {
       io.of('/poker').in(roomId).emit("newUser", room.users);
       return socket.emit('success', `You have succesfully joined to the room: ${roomId}`);
     });
-    // socket.disconnect();
     socket.on('voteScore', modifiedUser => {
       console.log('modified User: ');
       dbHandler.database.findOne({ _id: roomId }, (err, room) => {
@@ -115,6 +114,22 @@ io.of(`/poker`).on('connection', (socket) => {
         }
       });
     })
+    socket.on('resetScore',roomId => {
+      console.log(`reseting the score: ${roomId}`);
+      dbHandler.database.findOne({_id:roomId},(err,room) => {
+        room.users.forEach(user=>{
+          user.score = 0;
+        });
+        dbHandler.database.update({ _id: roomId }, { users: room.users }, (err, numReplaced) => {
+          if(err){
+            console.log('error occured during the update resetScore');
+          }
+          else {
+            io.of('/poker').in(roomId).emit("updateUsers", room.users);
+          }
+        });
+      });
+    });
   });
   socket.on('disconnect', () => {
     console.log(`user: ${userName} | userId:${userId} is disconnected from ${roomId}`);
@@ -135,7 +150,6 @@ io.of(`/poker`).on('connection', (socket) => {
       }
     });
   });
-
 });
 // })
 /**
