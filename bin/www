@@ -80,7 +80,7 @@ io.of(`/poker`).on('connection', (socket) => {
         let i = room.users.findIndex(user => user.id == modifiedUser.id);
         room.users[i] = modifiedUser;
         console.log(`modified user name: ${modifiedUser.name}`);
-        io.of('/poker').in(roomId).emit("updateUsers", room.users);
+        io.of('/poker').in(roomId).emit("updateUsers", {users: room.users,isReset: false});
         dbHandler.database.update({ _id: roomId }, { users: room.users }, (err, numReplaced) => {
           if (err) {
             console.log('An Error occured during update of modified User');
@@ -125,7 +125,7 @@ io.of(`/poker`).on('connection', (socket) => {
             console.log('error occured during the update resetScore');
           }
           else {
-            io.of('/poker').in(roomId).emit("updateUsers", room.users);
+            io.of('/poker').in(roomId).emit("updateUsers", {users: room.users,isReset: true});
           }
         });
       });

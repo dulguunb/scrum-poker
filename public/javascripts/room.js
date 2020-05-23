@@ -42,7 +42,7 @@ document.getElementById('nameSubmitButton').addEventListener('click', function (
       divCalculateScore.appendChild(submitButton);
       divCalculateScore.appendChild(resetButton);
     }
-    resetButton.addEventListener('click',() =>{
+    resetButton.addEventListener('click',() => {
       socket.emit('resetScore',roomId);
     });
     submitButton.addEventListener('click', () => {
@@ -60,7 +60,13 @@ socket.on('calculate',finalResult => {
   let joinedUsers = document.getElementById('joinedUsers');
   joinedUsers.innerHTML = listUsersHtml;
 });
-socket.on('updateUsers', (users) => {
+socket.on('updateUsers', (data) => {
+  const users = data.users;
+  const isReset = data.isReset;
+  // if it's reset. Reset the average score as well
+  if (isReset){
+    document.getElementById('averageScore').innerHTML = "";
+  }
   const joinedUsersHtml = createJoinedUsersHtml(users);
   document.getElementById('joinedUsers').innerHTML = joinedUsersHtml;
 });
@@ -69,12 +75,23 @@ socket.on('updateUsers', (users) => {
 let createJoinedUsersHtml = (users) => {
   let joinedUsersHtml = '<ul>'
   users.forEach(user => {
+    let descriptionOfUser = `${user.name}`
+    let classOftag = ""
+    if (user.admin){
+      descriptionOfUser+= " - Scrum Master";
+    }
+    if(!user.admin){
+      descriptionOfUser+=" - Developer";
+    }
     if (user.score == 0) {
-      joinedUsersHtml += `<li class="nonVotedUsers"> ${user.name}: NOT VOTED</li>`
+      classOftag = "nonVotedUsers";
+      descriptionOfUser+= ": NOT VOTED";
     }
-    else {
-      joinedUsersHtml += `<li class="votedUsers"> ${user.name}: VOTED</li>`
+    if(user.score != 0) {
+      classOftag = "votedUsers"
+      descriptionOfUser+= ": VOTED";
     }
+    joinedUsersHtml += `<li class="${classOftag}"> ${descriptionOfUser}</li>`
   });
   joinedUsersHtml += '</ul>'
   return joinedUsersHtml
